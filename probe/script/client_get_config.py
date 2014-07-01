@@ -36,7 +36,7 @@ def getConfiguration():
 	db=MySQLdb.connect(config.probe_server,config.username,config.password,config.dbname)
 	################################################
 	cursor=db.cursor()
-	
+	print len(data)	
 	########Updating Lock in the Database###########
 	def update_conf_lock():
 		query="update probe_lock set status=1 where name='conf_update'"
@@ -50,12 +50,12 @@ def getConfiguration():
 	###########Extracting Configuration data########
 	for instance in data:
 		'''Etraction of data to be pushed into Probe_Configuration'''
-		service_id=instance["id"]
+		service_id=instance["Service_ID"]
 		check_name=str(instance["SVC_Name"])
 		check_parameter=str(instance["SVC_Param"])
 		ip_host_address=str(instance["Target_IP"])
 		warning=float(instance["Warn_Thresh"])
-		critical=float(instance["Criti_THresh"])
+		critical=float(instance["Criti_Thresh"])
 		timeout=int(instance["Timeout_Thresh"])
 		max_attempt=int(instance["Max_Attempt"])
 		check_interval=int(instance["Interval"])
@@ -70,11 +70,11 @@ def getConfiguration():
 				print "Configuration Lock updated"
 			else:
 				print "Error in updating lock from central server..."
-			return 1
+#			return 1
 		except:
 			db.rollback()
 			print sys.exc_info()
-			return -1
+#			return -1
 		#################################################
 	db.close()
 

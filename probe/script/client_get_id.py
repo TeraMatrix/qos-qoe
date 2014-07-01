@@ -2,7 +2,8 @@
 import requests, json, config, MySQLdb, config, sys
 def getID():
 	st="probe?Probe_Name=" #Defining Path
-	query=config.central_server+st+config.probe_name #Getting Path from config file and appending it with probe_name
+	query=config.central_server+st+config.probe_name #Getting Path from config file and appending it with probe_name 
+	print query
 	try:
 		data=json.loads((requests.get(query)).text);#getting Probe ID using response library
 	except:

@@ -1,9 +1,10 @@
-probe_name='BNGN27'
+probe_name='BAWN1'
 username="root"
 password="asdf"
 dbname="probe_db"
 probe_server="localhost"
-central_server="http://192.168.0.156:8000/api/"
+cserver="192.168.0.150"
+central_server="http://192.168.0.150:9000/api/"
 CHECK_PATH="../checks/"
 OUTPUT_PATH="../output/"
 lat_w=300.000

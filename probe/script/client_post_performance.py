@@ -45,7 +45,7 @@ def postPerformance():
 				r=requests.post(url,data=json.dumps(payload),headers=headers)
 			except:
 				print "Error in Connection..with status code %s"%(r.status_code)
-			print r.status_code
+			print "Performance posted %s"%(r.status_code)
 			query="DELETE FROM Nocout_performance_services where TIMESTAMP='%s' AND Service_ID='%d'" %(var["Timestamp"],var["Service_id"])
 			cursor.execute(query)
 			db.commit()

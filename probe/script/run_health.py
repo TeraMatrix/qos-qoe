@@ -15,7 +15,7 @@ def connect_db():
 def execute():
 	start_time=datetime.datetime.now()
 	check_cpu=config.CHECK_PATH+"./check_cpu -w %d -c %d > "%(config.cpu_w,config.cpu_c)+config.OUTPUT_PATH+"health_cpu"
-	check_latency=config.CHECK_PATH+"./check_icmp -H %s -w %f -c %f -t %d > "%(config.central_server,config.lat_w,config.lat_c,config.lat_t)+config.OUTPUT_PATH+"health_latency"
+	check_latency=config.CHECK_PATH+"./check_icmp -H %s -w %f -c %f -t %d > "%(config.cserver,config.lat_w,config.lat_c,config.lat_t)+config.OUTPUT_PATH+"health_latency"
 	try:
 		return_code=os.system(check_cpu)
 	except:

@@ -36,15 +36,15 @@ def postHealthDetails():
 			payload={}
 			payload["Probe_ID"]=str(probe_id)
 			payload["CPU_Usage"]=str(var["CPU_Usage"])
-			payload["Ram_Usage"]=str(var["Latency"])
-			payload["Timestanp"]=str(var["Timestamp"])
+			payload["Latency"]=str(var["Latency"])
+			payload["Timestamp"]=str(var["Timestamp"])
 			headers = {'content-type': 'application/json','Accept': 'application/json'} #Content Type
 			try:
 				r=requests.post(url,data=json.dumps(payload),headers=headers) #requests
 			except:
 				print sys.exc_info()
 				print "Connection Error..with status code %s"%(r.status_code)
-			print r.status_code
+			print "Health status %s"%(r.status_code)
 			query="DELETE FROM Nocout_Health_Service where TIMESTAMP='%s'"%(var["Timestamp"])
 			cursor.execute(query)
 			db.commit()
