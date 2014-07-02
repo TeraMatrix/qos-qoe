@@ -1,0 +1,17 @@
+from django.contrib import admin
+from Nocout.models import Probe_Details,Probe_ID_Name,Probe_Connection,Version_Services,Service_Criteria,Probe_Service_Conf,Registered_Probes,Health_Service,Event,Performance_Services,Performance_Cal_Services,Alarm,TimeStamp_Performance
+	
+admin.site.register(Probe_Details)
+admin.site.register(Probe_ID_Name)
+admin.site.register(Probe_Connection)
+admin.site.register(Service_Criteria)
+admin.site.register(Registered_Probes)
+admin.site.register(Version_Services)
+admin.site.register(Probe_Service_Conf)
+admin.site.register(Health_Service)
+admin.site.register(Event)
+admin.site.register(Performance_Services)
+admin.site.register(Performance_Cal_Services)
+admin.site.register(Alarm)
+admin.site.register(TimeStamp_Performance)
+

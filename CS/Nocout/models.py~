@@ -1,0 +1,147 @@
+from django.db import models
+
+# Create your models here.
+
+## all the tables related to the Probe
+
+class Probe_ID_Name(models.Model):
+	Probe_ID = models.IntegerField(primary_key=True)
+	Probe_Name = models.CharField(max_length=128)
+	
+	def __unicode__(self):
+		return str(self.Probe_ID)
+
+class Probe_Details(models.Model):
+	Probe_ID = models.ForeignKey(Probe_ID_Name)
+	Latitute = models.CharField(max_length=128,unique=True)
+	Longtitute = models.CharField(max_length=128,unique=True)		
+	Probe_Name = models.CharField(max_length=128)
+	Probe_IP_Address =  models.IPAddressField(unique=True)
+	Probe_Auth_Mechan = models.CharField(max_length=128)
+	Probe_Speed = models.PositiveIntegerField()	
+	Version = models.IntegerField()
+	Mac_Address = models.CharField(max_length=128,unique=True)
+	Connected_To = models.IntegerField()
+	Central_Server_IP = models.IPAddressField()
+
+	def __unicode__(self):
+		return str(self.Probe_ID)
+
+
+class Probe_Connection(models.Model):
+	Connection_To = models.CharField(max_length=128)
+	Connection = models.IntegerField()
+
+	def __unicode__(self):
+		return str(self.Connection)
+
+class Version_Services(models.Model):
+	Version = models.IntegerField()
+	SVC_Name = models.CharField(max_length=128)
+	SVC_Para = models.CharField(max_length=128)
+	
+	def __unicode__(self):
+		return str(self.Version)	
+
+class Registered_Probes(models.Model):
+	Probe_ID =models.ForeignKey(Probe_ID_Name)
+	Registered = models.BooleanField()
+
+	def __unicode__(self):
+		return str(self.Probe_ID)
+
+## end of the tables related to the PROBE
+
+## tables realated to the Services and The configuration of the PROBE
+
+class Service_Criteria(models.Model):
+	SVC_Criteria = models.CharField(max_length=128)
+	Service_Name = models.CharField(max_length=128)
+	
+	def __unicode__(self):
+		return self.SVC_Criteria
+
+class Probe_Service_Conf(models.Model):
+	Probe_ID = models.ForeignKey(Probe_ID_Name)
+	Service_ID = models.IntegerField(primary_key=True)
+	Version = models.CharField(max_length=128)
+	SVC_Name = models.CharField(max_length=128)
+	SVC_Param =models.CharField(max_length=128)
+	Warn_Thresh = models.DecimalField(max_digits=10,decimal_places=6)
+	Criti_Thresh = models.DecimalField(max_digits=10,decimal_places=6)
+	Timeout_Thresh = models.IntegerField()
+	Target_IP = models.IPAddressField()
+	Max_Attempt = models.IntegerField()
+	Interval = models.IntegerField()
+	Packet = models.IntegerField()
+	TimeStamp = models.DateTimeField()	
+
+	def __unicode__(self):
+		return str(self.Service_ID)
+
+
+# end of the tables of the Services
+
+#Tables Related to the Performance of the Services and the Probe
+
+class Health_Service(models.Model):
+	Probe_ID = models.ForeignKey(Probe_ID_Name)
+	CPU_Usage = models.DecimalField(max_digits=10,decimal_places=6)
+	Ram_Usage = models.DecimalField(max_digits=10,decimal_places=6)
+	Latency = models.DecimalField(max_digits=10,decimal_places=6)
+	Timestamp = models.DateTimeField()
+	
+	def __unicode__(self):
+		return str(self.Probe_ID)
+	
+class Performance_Services(models.Model):
+	Service_ID = models.ForeignKey(Probe_Service_Conf)
+	Probe_ID = models.ForeignKey(Probe_ID_Name)
+	SVC_Name = models.CharField(max_length=128)
+	SVC_Param = models.CharField(max_length=128)
+	Value = models.DecimalField(max_digits=10,decimal_places=6)
+	TimeStamp = models.DateTimeField()
+
+	def __unicode__(self):
+		return str(self.Probe_ID)
+
+class Performance_Cal_Services(models.Model):
+	Probe_ID = models.ForeignKey(Probe_ID_Name)
+	SVC_Name = models.CharField(max_length=128)
+	SVC_Param = models.CharField(max_length=128)
+	Cal_Value = models.DecimalField(max_digits=10,decimal_places=6)
+	TimeStamp = models.DateTimeField()
+
+	def __unicode__(self):
+		return str(self.Probe_ID)
+
+class TimeStamp_Performance(models.Model):
+	TimeStamp = models.DateTimeField()
+	Overall_Value = models.DecimalField(max_digits=10,decimal_places=6)
+	Service_Name = models.CharField(max_length=128)
+	Service_Param = models.CharField(max_length=128)
+
+	def __unicode__(self):
+		return str(self.TimeStamp)
+
+
+## tables related to the Events and the Alaram
+
+class Alarm(models.Model):
+	Alarm_Number = models.IntegerField(primary_key=True)
+	Alarm_Descri = models.CharField(max_length=128)
+	
+	def __unicode__(self):
+		return str(self.Alarm_Number)
+
+class Event(models.Model):
+	Probe_ID = models.ForeignKey(Probe_ID_Name)
+	Description = models.CharField(max_length=128)
+	Severity = models.CharField(max_length=128)
+	SVC_Name = models.CharField(max_length=128)
+	SVC_Para = models.CharField(max_length=128)
+	Timestamp = models.DateTimeField()
+	Alarm_No = models.ForeignKey(Alarm)	
+
+	def __unicode__(self):
+		return self.Description

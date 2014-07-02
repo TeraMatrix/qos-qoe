@@ -1,0 +1,744 @@
+﻿<!DOCTYPE html>
+
+{% load static %}
+
+<html lang="en">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>Nocout</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<!-- STYLESHEETS --><!--[if lt IE 9]><script src="js/flot/excanvas.min.js"></script><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script><![endif]-->
+	<link rel="stylesheet" type="text/css" href="{% static 'css/cloud-admin.css' %}" >
+	<link rel="stylesheet" type="text/css"  href="{% static 'css/themes/default.css' %}" id="skin-switcher" >
+	<link rel="stylesheet" type="text/css"  href="{% static 'css/responsive.css' %}" >
+	
+	<link href="{% static 'font-awesome/css/font-awesome.min.css' %}" rel="stylesheet">
+	<!-- DATE RANGE PICKER -->
+	<link rel="stylesheet" type="text/css" href="{% static 'js/bootstrap-daterangepicker/daterangepicker-bs3.css' %}" />
+	<!-- TABLE CLOTH -->
+	<link rel="stylesheet" type="text/css" href="{% static 'js/tablecloth/css/tablecloth.min.css' %}" />
+	<!-- FONTS -->
+	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
+	<!-- CHARTS -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	
+<!-- HTTP CHART -->
+<script type="text/javascript">
+	$(function () {
+        $('#container_bar').highcharts({
+            title: {
+                text: 'HTTP Throughput',
+              
+            },
+           
+            xAxis: {
+                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+            },
+            yAxis: {
+                title: {
+                    text: 'Downlink(Mbps)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: 'Mbps'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Downlink',
+		type: 'spline',
+                data: {{ HTTP_Downlink }}
+            }]
+        });
+    });
+    
+    
+</script>
+
+<!-- ICMP Chart -->
+<script type="text/javascript">
+$(function () {
+        $('#container_icmp').highcharts({
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'ICMP'
+            },
+            xAxis: [{
+                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}ms',
+                    style: {
+                        color: Highcharts.getOptions().colors[5]
+                    }
+                },
+                title: {
+                    text: 'Avg. RTA (ms)',
+                    style: {
+                        color: Highcharts.getOptions().colors[5]
+                    }
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: 'Packet Loss (%)',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value} %',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+		
+                layout: 'vertical',
+                align: 'right',
+               
+                verticalAlign: 'top',
+                
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },
+            series: [{
+                name: 'Packet Loss',
+                type: 'column',
+                yAxis: 1,
+                data: {{ ICMP_Pkt_LOSS }},
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+    
+            }, {
+                name: 'Avg. RTA',
+                type: 'spline',
+                data: {{ ICMP_Avg_RTA }},
+                tooltip: {
+                    valueSuffix: 'ms'
+                }
+            }]
+        });
+    });
+    
+</script>
+
+<!-- TCP Chart -->
+<script type="text/javascript">
+	$(function () {
+        $('#container_TCP').highcharts({
+            title: {
+                text: 'TCP Response Time',
+              
+            },
+           
+            xAxis: {
+                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+            },
+            yAxis: {
+                title: {
+                    text: 'Response Time(ms)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: 'ms'
+            },
+              legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Response Time',
+		type: 'spline',
+                data: {{ TCP_Response_Time }}
+            }]
+        });
+    });
+    
+
+</script>
+
+
+<!-- DNS Chart -->
+<script type="text/javascript">
+	$(function () {
+        $('#container_DNS').highcharts({
+            title: {
+                text: 'DNS Response Time',
+              
+            },
+           
+            xAxis: {
+                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+            },
+            yAxis: {
+                title: {
+                    text: 'Response Time(ms)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+            tooltip: {
+                valueSuffix: 'ms'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Response Time',
+		type: 'spline',
+                data: {{ DNS_Response_Time }}
+            }]
+        });
+    });
+    
+</script>
+
+<!-- HEALTH Chart -->
+<script type="text/javascript">
+$(function () {
+        $('#container_HEALTH').highcharts({
+            chart: {
+                zoomType: 'xy'
+            },
+            title: {
+                text: 'HEALTH'
+            },
+            xAxis: [{
+                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+            }],
+            yAxis: [{ // Primary yAxis
+                labels: {
+                    format: '{value}ms',
+                    style: {
+                        color: Highcharts.getOptions().colors[5]
+                    }
+                },
+                title: {
+                    text: 'Latency (ms)',
+                    style: {
+                        color: Highcharts.getOptions().colors[5]
+                    }
+                }
+            }, { // Secondary yAxis
+                title: {
+                    text: 'CPU Usage (%)',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                labels: {
+                    format: '{value} %',
+                    style: {
+                        color: Highcharts.getOptions().colors[0]
+                    }
+                },
+                opposite: true
+            }],
+            tooltip: {
+                shared: true
+            },
+            legend: {
+		
+                layout: 'vertical',
+                align: 'right',
+               
+                verticalAlign: 'top',
+                
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+            },
+            series: [{
+                name: 'CPU Usage',
+                type: 'column',
+                yAxis: 1,
+                data: {{ Health_CPU_Usage }},
+                tooltip: {
+                    valueSuffix: ' %'
+                }
+    
+            }, {
+                name: 'Latency',
+                type: 'spline',
+                data: {{ Health_Latency }},
+                tooltip: {
+                    valueSuffix: 'ms'
+                }
+            }]
+        });
+    });
+    
+</script>
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+</head>
+<body>
+	<!-- HEADER -->
+	<header class="navbar clearfix navbar-fixed-top" id="header">
+		<div class="container_1">
+				<div class="navbar-brand">
+					<!-- COMPANY LOGO -->
+					<a href="index.html">
+						</a>
+					<!-- /COMPANY LOGO -->
+					
+					<!-- SIDEBAR COLLAPSE -->
+					<div id="sidebar-collapse" class="sidebar-collapse btn">
+						<i class="fa fa-bars" 
+							data-icon1="fa fa-bars" 
+							data-icon2="fa fa-bars" ></i>
+					</div>
+					<!-- /SIDEBAR COLLAPSE -->
+				</div>
+			
+				<!-- BEGIN TOP NAVIGATION MENU -->					
+				<ul class="nav navbar-nav pull-right">
+					<!-- BEGIN NOTIFICATION DROPDOWN -->	
+					<li class="dropdown" id="header-notification">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<i class="fa fa-bell"></i>
+							<span class="badge">7</span>
+							
+						</a>
+						<ul class="dropdown-menu notification">
+							<li class="dropdown-title">
+								<span><i class="fa fa-bell"></i> 7 Notifications</span>
+							</li>
+							<li>
+								<a href="#">
+									<span class="label label-success"><i class="fa fa-user"></i></span>
+									<span class="body">
+										<span class="message">5 users online. </span>
+										<span class="time">
+											<i class="fa fa-clock-o"></i>
+											<span>Just now</span>
+										</span>
+									</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="label label-primary"><i class="fa fa-comment"></i></span>
+									<span class="body">
+										<span class="message">Martin commented.</span>
+										<span class="time">
+											<i class="fa fa-clock-o"></i>
+											<span>19 mins</span>
+										</span>
+									</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="label label-warning"><i class="fa fa-lock"></i></span>
+									<span class="body">
+										<span class="message">DW1 server locked.</span>
+										<span class="time">
+											<i class="fa fa-clock-o"></i>
+											<span>32 mins</span>
+										</span>
+									</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="label label-info"><i class="fa fa-twitter"></i></span>
+									<span class="body">
+										<span class="message">Twitter connected.</span>
+										<span class="time">
+											<i class="fa fa-clock-o"></i>
+											<span>55 mins</span>
+										</span>
+									</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="label label-danger"><i class="fa fa-heart"></i></span>
+									<span class="body">
+										<span class="message">Jane liked. </span>
+										<span class="time">
+											<i class="fa fa-clock-o"></i>
+											<span>2 hrs</span>
+										</span>
+									</span>
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<span class="label label-warning"><i class="fa fa-exclamation-triangle"></i></span>
+									<span class="body">
+										<span class="message">Database overload.</span>
+										<span class="time">
+											<i class="fa fa-clock-o"></i>
+											<span>6 hrs</span>
+										</span>
+									</span>
+								</a>
+							</li>
+							<li class="footer">
+								<a href="#">See all notifications <i class="fa fa-arrow-circle-right"></i></a>
+							</li>
+						</ul>
+					</li>
+					<!-- END NOTIFICATION DROPDOWN -->
+					
+					<!-- BEGIN USER LOGIN DROPDOWN -->
+					<li class="dropdown user" id="header-user">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							<img alt="" src="img/avatars/avatar3.jpg" />
+							<span class="username">Administrator</span>
+							<i class="fa fa-angle-down"></i>
+						</a>
+						<ul class="dropdown-menu">
+							
+							<li><a href="login.html"><i class="fa fa-power-off"></i> Log Out</a></li>
+						</ul>
+					</li>
+					<!-- END USER LOGIN DROPDOWN -->
+				</ul>
+				<!-- END TOP NAVIGATION MENU -->
+		</div>
+		
+		
+	</header>
+	<!--/HEADER -->
+	
+	<!-- PAGE -->
+	<section id="page">
+				<!-- SIDEBAR -->
+				<div id="sidebar" class="sidebar sidebar-fixed">
+					<div class="sidebar-menu nav-collapse">
+						<div class="divide-20"></div>
+					
+						
+						<!-- SIDEBAR MENU -->
+						<ul>
+							<li>
+								<a href="/Nocout">
+								<i class="fa fa-tachometer fa-fw"></i> <span class="menu-text">Dashboard</span>
+								<span class="selected"></span>
+								</a>					
+							</li>
+							<li class="has-sub">
+								<a href="javascript:;" class="">
+								<i class="fa fa-bookmark-o fa-fw"></i> <span class="menu-text">QoS</span>
+								<span class="arrow"></span>
+								</a>
+								<ul class="sub">
+									<li><a class="" href="elements.html"><span class="sub-menu-text">ICMP</span></a></li><li><a class="" href="notifications.html"><span class="sub-menu-text">RSSI</span></a></li>
+									<li><a class="" href="buttons_icons.html"><span class="sub-menu-text">HTTP</span></a></li>
+									<li><a class="" href="sliders_progress.html"><span class="sub-menu-text">DNS</span></a></li>
+									<li><a class="" href="typography.html"><span class="sub-menu-text">TCP</span></a></li>
+									<li><a class="" href="tabs_accordions.html"><span class="sub-menu-text">VoIP</span></a></li>
+									<li><a class="" href="treeview.html"><span class="sub-menu-text">Gaming</span></a></li>
+								</ul>
+							</li>
+							<li class="has-sub">
+								<a href="javascript:;" class="">
+								<i class="fa fa-table fa-fw"></i> <span class="menu-text">QoE</span>
+								<span class="arrow"></span>
+								</a>
+								<ul class="sub">
+									<li><a class="" href="simple_table.html"><span class="sub-menu-text">Facebook</span></a></li>
+									<li><a class="" href="dynamic_tables.html"><span class="sub-menu-text">Twitter</span></a></li>
+									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Youtube</span></a></li>
+									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Google</span></a></li>
+									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Whatsapp</span></a></li>
+								</ul>
+							</li>
+							<li><a href=""><i class="fa fa-desktop fa-fw"></i> <span class="menu-text">Probe</span></a></li>
+							<li><a class="" href="inbox.html"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Events</span></a></li>
+							
+							
+							<li>
+								<a href="" class="">
+								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Reports</span>
+								</a></li>
+								
+							
+							<li>
+								<a href="" class="">
+								<i class="fa fa-map-marker fa-fw"></i> <span class="menu-text">GeoView</span>
+								</a></li>
+								
+							
+						</ul>
+						<!-- /SIDEBAR MENU -->
+					</div>
+				</div>
+				<!-- /SIDEBAR -->
+		<div id="main-content">
+			<div class="container_1">
+				<div class="row">
+					<div id="content" class="col-lg-12">
+						<!-- PAGE HEADER-->
+						<div class="row">
+							<div class="col-sm-12">
+								<div class="page-header">
+									<!-- STYLER -->
+									
+									<!-- /STYLER -->
+									<!-- BREADCRUMBS -->
+									<ul class="breadcrumb">
+										<li>
+											<i class="fa fa-home"></i>
+											<a href="index.html">Home</a>
+										</li>
+										<li>Probes</li>
+									</ul>
+									<!-- /BREADCRUMBS -->
+									<div class="clearfix">
+										<h3 class="content-title pull-left">Probes</h3>
+										<!-- DATE RANGE PICKER -->
+										<span class="date-range pull-right">
+											<div class="btn-group">
+												<a class="js_update btn btn-default" href="#">Today</a>
+												<a class="js_update btn btn-default" href="#">Last 7 Days</a>
+												<a class="js_update btn btn-default hidden-xs" href="#">Last month</a>
+												
+												<a id="reportrange" class="btn reportrange">
+													<i class="fa fa-calendar"></i>
+													<span></span>
+													<i class="fa fa-angle-down"></i>
+												</a>
+											</div>
+										</span>
+										<!-- /DATE RANGE PICKER -->
+										</div>
+									<div class="description">Probes Details and Stastics</div>
+								</div>
+							</div>
+						</div>
+						<!-- /PAGE HEADER -->
+		
+						<!-- SELECT PROBE -->
+						<div class = 'row'>
+							<div class ="col-md-12">
+								<div class="quick-pie panel panel-default">
+											<div class="panel-body">
+								<div class="col-md-6">
+									<form action ="{% url 'Probe_details' %}" method ="POST">{% csrf_token %}
+									<strong>Probe Names:</strong>&nbsp;&nbsp;&nbsp;
+									
+									<select name = "Probe_ID">
+									<option value="%" selected="selected" disabled="True">Select the option:</option>
+									{% if reg_probe %}
+										{% for r in reg_probe %}
+											<option value = "{{ r.Probe_ID }}" > {{ r.Probe_Name }}</option>									
+										{% endfor %}
+										
+									{% else %}
+										Error:
+									{% endif %}	
+									<h1>{{ Probe_ID }} </h1>
+									</select>
+								</div>
+								<div class="col-md-3">								
+									<input type="submit" value="Report">
+									</form>
+								</div>
+								</div></div>
+							</div>
+						</div>
+						<!-- END OF SELECT PROBE -->
+						
+						<!-- PROBE DETAILS -->
+						<div class = 'row'>
+							<div class ="col-md-12">
+								<div class="quick-pie panel panel-default">
+											<div class="panel-body">
+									{% if detail %}
+										{% for details in detail %}
+										
+										<div class="col-md-4">
+										<strong>Selected Site ID: </strong> &nbsp;&nbsp;&nbsp;{{ details.Probe_ID }}		
+										</div>
+										<div class="col-md-4">
+										<strong>Location: </strong> &nbsp;&nbsp;&nbsp;{{ details.Probe_Name }}		
+										</div>
+										<div class="col-md-4">
+										<strong>Version: </strong> &nbsp;&nbsp;&nbsp;{{ details.Version }}		
+										</div>
+										<div class="col-md-4">
+										<strong>Authentication Mechanism: </strong> &nbsp;&nbsp;&nbsp;{{ details.Probe_Auth_Mechan }}		
+										</div>
+										<div class="col-md-4">
+										<strong>Probe Speed: </strong> &nbsp;&nbsp;&nbsp;{{ details.Probe_Speed }}		
+										</div>
+										<div class="col-md-4">
+										<strong>IP Address: </strong> &nbsp;&nbsp;&nbsp;{{ details.Probe_IP_Address }}		
+										</div>
+										{% endfor %}
+									{% endif %}
+									
+								
+								</div></div>
+							</div>
+						</div>
+						<!-- END OF PROBE DETAILS -->
+						
+						<!-- END OF SELECT PROBE -->
+						
+					 <!-- HERO GRAPH -->
+						<div class="row">
+							<div class="col-md-12">
+								<!-- BOX -->
+								<div class="box border green">
+									<div class="box-title">
+										<h4><i class="fa fa-bars"></i> <span class="hidden-inline-mobile">Result</span></h4>
+									</div>
+									<div class="box-body">
+										<div class="tabbable header-tabs">
+											<ul class="nav nav-tabs">
+												<li><a href="#box_tab5" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">Health</span></a></li>
+												<li><a href="#box_tab4" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">DNS Resolution</span></a></li>
+												 <li><a href="#box_tab3" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">TCP</span></a></li>
+												<li><a href="#box_tab2" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">ICMP</span></a></li>
+												 <li class="active"><a href="#box_tab1" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">HTTP Throughput</span></a></li>
+											 </ul>
+											 <div class="tab-content">
+												 <div class="tab-pane fade in active" id="box_tab1">
+													<!-- TAB 1 -->
+											
+													<div id="chart-dash" class="chart">
+																											
+								<div id="container_bar" style="width: 1000px; height: 280px; margin:0"></div>
+	 							
+
+													</div>
+												
+													<hr class="margin-bottom-0">
+	
+												   <!-- /TAB 1 -->
+												 </div>
+												 <div class="tab-pane fade" id="box_tab2">
+													<!-- TAB 2 -->
+													<div id="chart-dash" class="chart">
+
+
+												<div id="container_icmp" style="width: 1000px; height: 280px; margin: 0"></div>
+
+													</div>
+													<hr class="margin-bottom-0">
+												   <!-- /TAB 2 -->
+												 </div>
+												  <div class="tab-pane fade" id="box_tab3">
+													<!-- TAB 3 -->
+													<div id="chart-dash" class="chart">
+										<div id="container_TCP" style="width: 1000px; height: 280px; margin: 0"></div>
+													</div>
+													<hr class="margin-bottom-0">
+												   <!-- /TAB 3-->
+												 </div>
+												<div class="tab-pane fade" id="box_tab4">
+													<!-- TAB 4 -->
+													<div id="chart-dash" class="chart">
+<div id="container_DNS" style="width: 1000px; height: 280px; margin: 0"></div>														
+													</div>
+													<hr class="margin-bottom-0">
+												   <!-- /TAB 4-->
+												 </div>
+												<div class="tab-pane fade" id="box_tab5">
+													<!-- TAB 5 -->
+													<div id="chart-dash" class="chart">
+<div id="container_HEALTH" style="width: 1000px; height: 280px; margin: 0"></div>														
+													</div>
+													<hr class="margin-bottom-0">
+												   <!-- /TAB 5-->
+												 </div>
+											 </div>
+										</div>
+									</div>
+								</div>
+								<!-- /BOX -->
+							</div>
+						</div>
+						<!-- /HERO GRAPH -->
+					
+
+					</div><!-- /CONTENT-->
+				</div>
+			</div>
+		</div>
+
+	</section>
+
+	<!--/PAGE -->
+	<!-- JAVASCRIPTS -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	
+	<!-- JQUERY -->
+	
+	<!-- JQUERY UI-->
+	<script src="{% static 'js/jquery-ui-1.10.3.custom/js/jquery-ui-1.10.3.custom.min.js' %}"></script>
+	<!-- BOOTSTRAP -->
+	<script src="{% static 'bootstrap-dist/js/bootstrap.min.js' %}"></script>
+	
+		
+	<!-- DATE RANGE PICKER -->
+	<script src="{% static 'js/bootstrap-daterangepicker/moment.min.js' %}"></script>
+	
+	<script src="{% static 'js/bootstrap-daterangepicker/daterangepicker.min.js' %}"></script>
+	<!-- SLIMSCROLL -->
+	<script type="text/javascript" src="{% static 'js/jQuery-slimScroll-1.3.0/jquery.slimscroll.min.js' %}"></script><script type="text/javascript" src="js/jQuery-slimScroll-1.3.0/slimScrollHorizontal.min.js"></script>
+	<!-- BLOCK UI -->
+	<script type="text/javascript" src="{% static 'js/jQuery-BlockUI/jquery.blockUI.min.js' %}"></script>
+	<!-- TABLE CLOTH -->
+	<script type="text/javascript" src="{% static 'js/tablecloth/js/jquery.tablecloth.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/tablecloth/js/jquery.tablesorter.min.js' %}"></script>
+		<!-- FLOT CHARTS -->
+	<script src="{% static 'js/flot/jquery.flot.min.js' %}"></script>
+	<script src="{% static 'js/flot/jquery.flot.time.min.js' %}"></script>
+    	<script src="{% static 'js/flot/jquery.flot.selection.min.js' %}"></script>
+	<script src="{% static 'js/flot/jquery.flot.resize.min.js' %}"></script>
+    	<script src="{% static 'js/flot/jquery.flot.pie.min.js' %}"></script>
+    	<script src="{% static 'js/flot/jquery.flot.stack.min.js' %""></script>
+    	<script src="{% static 'js/flot/jquery.flot.crosshair.min.js' %}"></script>
+	<!-- COOKIE -->
+	<script type="text/javascript" src="{% static 'js/jQuery-Cookie/jquery.cookie.min.js' %}"></script>
+	<!-- CUSTOM SCRIPT -->
+	<script src="{% static 'js/script.js' %}"></script>
+	<script src="{% static 'js/charts.js' %}"></script>
+	<script>
+		jQuery(document).ready(function() {		
+			App.setPage("fixed_header_sidebar");  //Set current page
+			App.init(); //Initialise plugins and elements
+		});
+	</script>
+	<!-- /JAVASCRIPTS -->
+</body>
+</html>
