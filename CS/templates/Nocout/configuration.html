@@ -21,11 +21,17 @@
 	<!-- FONTS -->
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
 </head>
-<body>
+<body >
 	<!-- HEADER -->
 	<header class="navbar clearfix navbar-fixed-top" id="header">
 		<div class="container">
 				<div class="navbar-brand">
+					<!-- COMPANY LOGO -->
+					<a href="index.html">
+						<img src="img/logo/logo.png" alt="Cloud Admin Logo" class="img-responsive" height="30" width="120">
+					</a>
+					<!-- /COMPANY LOGO -->
+					
 					<!-- SIDEBAR COLLAPSE -->
 					<div id="sidebar-collapse" class="sidebar-collapse btn">
 						<i class="fa fa-bars" 
@@ -37,6 +43,10 @@
 			
 				<!-- BEGIN TOP NAVIGATION MENU -->					
 				<ul class="nav navbar-nav pull-right">
+					<!-- BEGIN NOTIFICATION DROPDOWN -->	
+					<!--  -->
+					<!-- END NOTIFICATION DROPDOWN -->
+					
 					<!-- BEGIN USER LOGIN DROPDOWN -->
 					<li class="dropdown user" id="header-user">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -106,11 +116,11 @@
 							 -->
 							
 							<li>
-								<a href="" class="">
-								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">INventory</span>
+								<a href="/Nocout/Inventory" class="">
+								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Inventory</span>
 								</a></li>
-							<li><a class="" href="registration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Probe Registration</span></a></li>
-							<li><a class="" href="/Nocout/configuration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Probe Configuration</span></a></li>
+								<li><a class="" href="registration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Probe Registration</span></a></li>
+								<li><a class="" href=""><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Configuration</span></a></li>
 						</ul>
 						<!-- /SIDEBAR MENU -->
 					</div>
@@ -133,135 +143,105 @@
 											<i class="fa fa-home"></i>
 											<a href="index.html">Home</a>
 										</li>
-										<li>Inventory</li>
+										<li>Add Configuration</li>
 									</ul>
 									<!-- /BREADCRUMBS -->
 									<div class="clearfix">
-										<h3 class="content-title pull-left">Inventory</h3>
+										<h3 class="content-title pull-left">Probe Service Configuration</h3>
 										<!-- DATE RANGE PICKER -->
 										
 										<!-- /DATE RANGE PICKER -->
 										</div>
-									<div class="description">Probe Details</div>
+									<div class="description">Enter the configuration Details of Probe</div>
 								</div>
 							</div>
 						</div>
 						<!-- /PAGE HEADER -->
-						
-					<!--REGISTERED PROBE TABLES Begin Here -->
-					<form action ="{% url 'Delete_Probe' %}" method ="GET">{% csrf_token %}	
-						<div class="row">
-							<div class="col-md-12">
-								<!-- BOX -->
-								<div class="box border blue">
-									<div class="box-title">
-										<h4><i class="fa fa-table"></i>	Registered Probes</h4>
-										<div class="tools">
-											
-											<a href="javascript:;" class="reload">
-												<i class="fa fa-refresh"></i>
-											</a>
-											<a href="javascript:;" class="collapse">
-												<i class="fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-									<div class="box-body">
-										<table class="table">
-											<thead>
-											  <tr>
-												<th>Probe ID</th>
-												<th>Probe Name</th>
-												<th>IP Address</th>
-												<th>Authentication Mechanism</th>
-												<th>Version</th>
-												<th>Mac Address</th>
-												<th>Action </th>
-											  </tr>
-											</thead>
-											<tbody>
-												{% if registered_probes %}
-													{% for probes in registered_probes %}
-														<tr>
-															<td>{{ probes.Probe_ID_id }} </td>
-															<td>{{ probes.Probe_Name }} </td>
-															<td>{{ probes.Probe_IP_Address }} </td>
-															<td>{{ probes.Probe_Auth_Mechan }}</td>
-															<td>{{ probes.Version }}</td>
-															<td>{{ probes.Mac_Address }}</td>
-															<td><input type="checkbox" value="{{ probes.Probe_ID_id }}" name="Delete" onchange="this.form.submit()"> Delete Probe<br/>
-															<input type="checkbox" value="{{ probes.Probe_ID_id }}" name="change_conf" onchange="this.form.submit()"> Change Configuration
-															</td>
-														</tr>
-													{% endfor %}
-												{% endif %}
-											</tbody>
-										  </table>
-									</div>
+						<!-- PAGE -->
+	<section id="page">
+			<!-- HEADER -->
+			
+			<!-- Configuration -->
+			<section id="configuration" class="visible">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-6 col-md-offset-3">
+							<div class="login-box-plain">
+
+								<h2 class="bigintro">Configuration</h2>
+								<div class="divide-40"></div>
+								<form action="{% url 'configuration' %}" method="POST" role="form">
+								{% csrf_token %}
+								 <div class="form-group">
+										<label for="exampleInputName">Probe Name</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<select name = "Probe_ID" class="form-control">
+										<option value="%" selected="selected" disabled="True">Select Probe</option>
+										{% if reg_probe %}
+											{% for r in reg_probe %}
+												<option value = "{{ r.Probe_ID }}" > {{ r.Probe_Name }}</option>								
+										{% endfor %}
+										{% else %}
+											Error:
+										{% endif %}	
+									</select><br>
 								</div>
-								<!-- /BOX -->
+								<div class="form-group">
+										<label for="exampleInputName">Service Name</label>&nbsp;&nbsp;&nbsp;
+											<select name = "Service" class="form-control">
+												<option value="%" selected="selected" disabled="True">Select Service</option>
+												<option value="Http_Downlink">Http Downlink</option>
+												<option value="Http_Response_Time">Http Response Time</option>
+												<option value="DNS_Response_Time">DNS Response Time</option>
+												<option value="TCP_Response_Time">TCP Response Time</option>
+												<option value="ICMP_All">ICMP</option>
+											</select><br>
+								</div>
+								 <div class="form-group">
+										<label for="exampleInputName">Critical Threshold</label>
+											<i class="fa fa-font"></i>
+											<input type="text" name ="Critical_Threshold" class="form-control" id="exampleInputName" >
+								</div>
+
+								  <div class="form-group">
+										<label for="exampleInputName">Warning Threshold</label>
+										<i class="fa fa-font"></i>
+										<input type="text" name="Warning_Threshold" class="form-control" id="exampleInputName" >
+								  </div>
+								 <div class="form-group">
+										<label for="exampleInputName">Target IP/URL</label>
+										<i class="fa fa-font"></i>
+										<input type="text" name="Target_IP" class="form-control" id="exampleInputName" >
+								  </div>
+								  <div class="form-group"> 
+										<label for="exampleInputName">Check Interval</label>
+										<i class="fa fa-font"></i>
+										<input type="text" name="Check_Interval" class="form-control" id="exampleInputName" >
+								  </div>
+								   <div class="form-group">
+										<label for="exampleInputName">Timeout Interval</label>
+										<i class="fa fa-font"></i>
+										<input type="text" name="Timeout" class="form-control" id="exampleInputName" >
+								  </div>
+								   <div class="form-group">
+										<label for="exampleInputName">Maximum Attempt</label>
+										<i class="fa fa-font"></i>
+										<input type="text" name="Maximum_Attempt" class="form-control" id="exampleInputName" >
+								  </div>
+								 <div class="form-actions">
+									<button type="submit" class="btn btn-success">Add</button>
+								  </div>
+								</form>
 							</div>
 						</div>
-					</form>
+					</div>
+				</div>
 
+			</section>
+			<!--/Configuration -->
+			<!-- FORGOT PASSWORD -->
+	</section>
+	<!--/PAGE -->
 					
-						<!-- REGISTERED PROBE TABLE END -->
-
-						<!--UNREGISTERED PROBES TABLES Begin Here -->	
-					<form action ="{% url 'Register_Probe' %}" method ="GET">{% csrf_token %}
-						<div class="row">
-							<div class="col-md-12">
-								<!-- BOX -->
-								<div class="box border blue">
-									<div class="box-title">
-										<h4><i class="fa fa-table"></i>	UnRegistered Probes</h4>
-										<div class="tools">
-											
-											<a href="javascript:;" class="reload">
-												<i class="fa fa-refresh"></i>
-											</a>
-											<a href="javascript:;" class="collapse">
-												<i class="fa fa-chevron-up"></i>
-											</a>
-										</div>
-									</div>
-									<div class="box-body">
-										<table class="table">
-											<thead>
-											  <tr>
-												<th>Probe ID</th>
-												<th>Probe Name</th>
-												<th>IP Address</th>
-												<th>Authentication Mechanism</th>
-												<th>Version</th>
-												<th>Mac Address</th>
-												<th>Register</th>
-											  </tr>
-											</thead>
-											<tbody>
-												{% if unregistered_probes %}
-													{% for probes in unregistered_probes %}
-														<tr>
-															<td>{{ probes.Probe_ID_id }} </td>
-															<td>{{ probes.Probe_Name }} </td>
-															<td>{{ probes.Probe_IP_Address }} </td>
-															<td>{{ probes.Probe_Auth_Mechan }}</td>
-															<td>{{ probes.Version }}</td>
-															<td>{{ probes.Mac_Address }}</td>
-															<td><input type="checkbox" value="{{ probes.Probe_ID_id }}" name="Register_IT" onchange="this.form.submit()"> </td>
-														</tr>
-													{% endfor %}
-												{% endif %}
-											</tbody>
-										  </table>
-									</div>
-								</div>
-								<!-- /BOX -->
-							</div>
-						</div>
-					</form>
-						<!-- UNREGISTERED PROBES TABLE END -->
-
 					</div><!-- /CONTENT-->
 				</div>
 			</div>
@@ -308,12 +288,22 @@
 			App.init(); //Initialise plugins and elements
 		});
 	</script>
-
+	<!-- /JAVASCRIPTS -->
+	<!-- UNIFORM -->
+	<script type="text/javascript" src="{% static 'js/uniform/jquery.uniform.min.js' %}"></script>
+	<!-- CUSTOM SCRIPT -->
+	<script src="{% static 'js/script.js' %}"></script>
+	<script>
+		jQuery(document).ready(function() {		
+			App.setPage("register");  //Set current page
+			App.init(); //Initialise plugins and elements
+		});
+	</script>
 	<script type="text/javascript">
-		function myFunction_delete() 
-		{
-    		alert("Are you sure you want to Delete?");		
-    	}
+		function swapScreen(id) {
+			jQuery('.visible').removeClass('visible animated fadeInUp');
+			jQuery('#'+id).addClass('visible animated fadeInUp');
+		}
 	</script>
 	<!-- /JAVASCRIPTS -->
 </body>

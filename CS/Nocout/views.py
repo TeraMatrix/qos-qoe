@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+import sys
 # Create your views here.
 from django.template import RequestContext
 from django.shortcuts import render_to_response
@@ -26,14 +26,16 @@ def index(request):
 ##################################################################################
 def probes(request):
 	context = RequestContext(request)
-
-	id_name = Probe_ID_Name.objects.raw('SELECT * FROM Nocout_probe_id_name INNER JOIN Nocout_registered_probes on Nocout_registered_probes.Probe_ID_id = Nocout_probe_id_name.Probe_ID')
-	
-	probe_details['reg_probe']=id_name
-	
-	print "Probe"
-
+	getdetails()
+	#print "Probe"
+	#print probe_details
 	return render_to_response('Nocout/probes.html',probe_details,context)
+
+def getdetails():
+	id_name = Probe_ID_Name.objects.raw('SELECT * FROM Nocout_probe_id_name INNER JOIN Nocout_registered_probes on Nocout_registered_probes.Probe_ID_id = Nocout_probe_id_name.Probe_ID')	
+	probe_details['reg_probe']=id_name
+	for result in id_name:
+		print result.Probe_Name
 
 def service_selection(probe_id,SVC_Name):
 	if SVC_Name == "HTTP_Browsing":
@@ -236,14 +238,23 @@ def Probe_services_details(request):
 
 		probe_details['HTTP_Browsing'] = performance_HTTP_Browsing
 		# END OF HTTP_DOWNLINK 
-
-		
 		return redirect('probes.html',probe_details)
+
 
 def Inventory(request):
 	context = RequestContext(request)
+	probe_ids = Probe_ID_Name.objects.raw('SELECT * FROM Nocout_probe_id_name INNER JOIN Nocout_registered_probes on Nocout_registered_probes.Probe_ID_id = Nocout_probe_id_name.Probe_ID')
 	
-	
+	list_ids = []
+	for ids in probe_ids:
+		list_ids.append(int(ids.Probe_ID))
+
+	registered_probes = Probe_Details.objects.filter(Probe_ID_id__in=list_ids)
+	unregistered_probes = Probe_Details.objects.exclude(Probe_ID_id__in=list_ids)
+
+	probe_details['registered_probes'] = registered_probes
+	probe_details['unregistered_probes'] = unregistered_probes
+
 	return render_to_response('Nocout/inventory.html',probe_details,context)
 			
 
@@ -278,15 +289,53 @@ def registration(request):
 			details = Probe_Details.objects.create(Probe_ID_id= probe_id,Latitute=Latitute,Longtitute=Longitude,Probe_Name=Probe_Name,Probe_IP_Address=Probe_IP_Address,Probe_Auth_Mechan=Probe_Auth_Mechan,Probe_Speed=Probe_Speed,Version=Version,Mac_Address=MAC_Address,Central_Server_IP=Central_Server_IP,Connected_To=connected_ID)
 			print details
 		
-			return redirect('index.html')
+			return redirect('/Nocout')
 		except:
 			return redirect('registration.html')
 
 
-		
-	
+def Register_Probe(request):
+	if request.method == 'GET': 
+		probe_to_be_registered = request.GET.get('Register_IT')
 
+		print probe_to_be_registered
+		Registered_Probes.objects.create(Probe_ID_id=probe_to_be_registered,Registered="True")
 
+		return redirect('/Nocout/Inventory')
 
-	
+def Delete_Probe(request):
+	if request.method == 'GET': 
+		probe_to_be_deleted = request.GET.get('Delete')
+		probe_to_be_configured = request.GET.get('change_conf')
 
+		if probe_to_be_configured == None:
+			Probe_ID_Name.objects.filter(Probe_ID=probe_to_be_deleted).delete()
+			return redirect('/Nocout/Inventory')
+		else:
+			return redirect('/Nocout/Inventory')
+
+def addconfiguration(request):
+	context=RequestContext(request)
+	if request.method=='GET':
+		getdetails()
+		return render_to_response('Nocout/configuration.html',probe_details,context)
+
+	if request.method =='POST':
+		Probe_ID=int(request.POST.get('Probe_ID'))
+		Service = request.POST.get('Service')
+		Critical_Threshold = float(request.POST.get('Critical_Threshold'))
+		Warning_Threshold = float((request.POST.get('Warning_Threshold')))
+		Target_IP = str(request.POST.get('Target_IP'))
+		Check_Interval = int(request.POST.get('Check_Interval'))
+		Timeout = int(request.POST.get('Timeout'))
+		Maximum_Attempt = int(request.POST.get('Maximum_Attempt'))
+
+		SVC=Service.split('_')
+		SVC_Name=SVC[0]
+		SVC_Param=SVC[1]
+		try:
+			details = Probe_Service_Conf.objects.create(Probe_ID_id=Probe_ID,Version=1,SVC_Name=SVC_Name,SVC_Param=SVC_Param,Warn_Thresh=Warning_Threshold,Criti_Thresh=Critical_Threshold,Timeout_Thresh=Timeout,Target_IP=Target_IP,Max_Attempt=Maximum_Attempt,Interval=Check_Interval,Packet=0,TimeStamp="2014-07-1 02:26:23")
+			return redirect('/Nocout')
+		except:
+			print sys.exc_info()
+			return redirect('configuration.html')
