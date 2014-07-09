@@ -22,21 +22,23 @@ def index(request):
 	return render_to_response('Nocout/index.html',timestamp_dict,context)
 
 ##################################################################################
-# RETRIEVE THE NAME OF THE REGISTERED PROBES
+# DISPLAY ON THE PROBE PAGE
 ##################################################################################
 def probes(request):
 	context = RequestContext(request)
 	getdetails()
-	#print "Probe"
-	#print probe_details
 	return render_to_response('Nocout/probes.html',probe_details,context)
 
+##################################################################################
+# RETRIEVE THE NAME OF THE REGISTERED PROBES
+##################################################################################
 def getdetails():
 	id_name = Probe_ID_Name.objects.raw('SELECT * FROM Nocout_probe_id_name INNER JOIN Nocout_registered_probes on Nocout_registered_probes.Probe_ID_id = Nocout_probe_id_name.Probe_ID')	
 	probe_details['reg_probe']=id_name
-	for result in id_name:
-		print result.Probe_Name
 
+##################################################################################
+# RETRIEVE THE SERVICES CORRESPONDING TO PROBES AND SERVICE NAME
+##################################################################################
 def service_selection(probe_id,SVC_Name):
 	if SVC_Name == "HTTP_Browsing":
 		services = Probe_Service_Conf.objects.raw('SELECT * FROM Nocout_probe_service_conf WHERE SVC_NAME="HTTP" AND SVC_Param="Response Time" AND Probe_ID_id=%s',[probe_id])
@@ -51,12 +53,10 @@ def service_selection(probe_id,SVC_Name):
 # RETRIEVE THE SELECTED PROBE AND SERVICES DETAILS 
 ##################################################################################
 def Probe_details(request):
-	print "Hello"
 	if request.method == 'GET': 
 
 		# TO GET THE DETAILS OF THE SELECTED PROBE
 		probe_id = request.GET.get('Probe_ID')
-		print "ptrtrtr:" ,probe_id
 		detail = Probe_Details.objects.filter(Probe_ID=probe_id)
 		probe_details['detail']=detail
 		probe_details['probe_id'] = probe_id;
@@ -70,12 +70,12 @@ def Probe_details(request):
 		probe_details['Service_HTTP_Browsing'] = service_selection(probe_id,"HTTP_Browsing")
 
 		# END OF TO GET THE SERVICES DETAILS
-
 		return redirect('probes.html',probe_details)
 
-
+##################################################################################
+# RETRIEVE THE SERVICES DETAILS
+##################################################################################
 def Probe_services_details(request):
-	print "IN the services details"
 	probe_id = probe_details['probe_id']
 	probe_details['services_cor_probe'] = probe_id
 	if request.method == 'GET': 
@@ -241,6 +241,9 @@ def Probe_services_details(request):
 		return redirect('probes.html',probe_details)
 
 
+##################################################################################
+# DISPLAY ALL THE DETAILS OF THE PROBES
+##################################################################################
 def Inventory(request):
 	context = RequestContext(request)
 	probe_ids = Probe_ID_Name.objects.raw('SELECT * FROM Nocout_probe_id_name INNER JOIN Nocout_registered_probes on Nocout_registered_probes.Probe_ID_id = Nocout_probe_id_name.Probe_ID')
@@ -258,7 +261,9 @@ def Inventory(request):
 	return render_to_response('Nocout/inventory.html',probe_details,context)
 			
 
-
+##################################################################################
+# PROBE REGISTRATION PAGE
+##################################################################################
 def registration(request):
 	context=RequestContext(request)
 
@@ -294,6 +299,9 @@ def registration(request):
 			return redirect('registration.html')
 
 
+##################################################################################
+# REGISTERE THE PROBE
+##################################################################################
 def Register_Probe(request):
 	if request.method == 'GET': 
 		probe_to_be_registered = request.GET.get('Register_IT')
@@ -303,17 +311,74 @@ def Register_Probe(request):
 
 		return redirect('/Nocout/Inventory')
 
+service_dict = {}
+##################################################################################
+# SHOW THE CONFIGURATION CORRESPONDING TO THE PROBES
+##################################################################################
+def show_configuration(probe_id):
+	services = Probe_Service_Conf.objects.raw('SELECT * FROM Nocout_probe_service_conf WHERE Probe_ID_id=%s',[probe_id])
+	service_dict['services'] = services
+	return service_dict
+
+##################################################################################
+# DELETE THE PROBE
+##################################################################################
 def Delete_Probe(request):
-	if request.method == 'GET': 
+	context = RequestContext(request)
+	if request.method == 'GET':
 		probe_to_be_deleted = request.GET.get('Delete')
 		probe_to_be_configured = request.GET.get('change_conf')
 
 		if probe_to_be_configured == None:
 			Probe_ID_Name.objects.filter(Probe_ID=probe_to_be_deleted).delete()
+			probe_details.clear()
 			return redirect('/Nocout/Inventory')
 		else:
-			return redirect('/Nocout/Inventory')
+			show_configuration(probe_to_be_configured)
+			return redirect('/Nocout/ChangeConfiguration')
+			
+##################################################################################
+# CHANGE THE CONFIGURATION OF SERVICES
+##################################################################################
+def ChangeConfiguration(request):
+	context=RequestContext(request)
+	if request.method=='GET':
+		return render_to_response('Nocout/ChangeConfiguration.html',service_dict,context)
 
+	if request.method =='POST':
+		Service_ID=str(request.POST.get('Service_ID'))
+		Critical_Threshold = str(request.POST.get('Critical_Threshold'))
+		Warning_Threshold = str(request.POST.get('Warning_Threshold'))
+		Target_IP = str(request.POST.get('Target_IP'))
+		Check_Interval = str(request.POST.get('Check_Interval'))
+		Timeout = str(request.POST.get('Timeout'))
+		Maximum_Attempt = str(request.POST.get('Maximum_Attempt'))
+		if Service_ID!='':
+			Service_ID=int(Service_ID)
+			result= Probe_Service_Conf.objects.get(Service_ID=Service_ID)
+			if Critical_Threshold!='':
+				Critical_Threshold=float(Critical_Threshold)
+				result.Criti_Thresh=Critical_Threshold
+			if Warning_Threshold!='':
+				Warning_Threshold=float(Warning_Threshold)
+				result.Warn_Thresh=Warning_Threshold
+			if Target_IP!='':
+				result.Target_IP=Target_IP
+			if Check_Interval!='':
+				Check_Interval=int(Check_Interval)
+				result.Interval=Check_Interval
+			if Timeout!='':
+				Timeout=int(Timeout)
+				result.Timeout_Thresh=Timeout
+			if Maximum_Attempt!='':
+				Maximum_Attempt=int(Maximum_Attempt)
+				result.Max_Attempt=Maximum_Attempt
+			result.save()		
+		return redirect('/Nocout/Inventory')
+
+##################################################################################
+# ADD THE CONFIGURATION
+##################################################################################
 def addconfiguration(request):
 	context=RequestContext(request)
 	if request.method=='GET':

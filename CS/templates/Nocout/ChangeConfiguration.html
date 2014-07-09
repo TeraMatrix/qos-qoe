@@ -120,7 +120,7 @@
 								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Inventory</span>
 								</a></li>
 								<li><a class="" href="registration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Probe Registration</span></a></li>
-								<li><a class="" href=""><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Configuration</span></a></li>
+								<li><a class="" href="configuration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Configuration</span></a></li>
 						</ul>
 						<!-- /SIDEBAR MENU -->
 					</div>
@@ -161,40 +161,29 @@
 	<section id="page">
 			<!-- HEADER -->
 			
-			<!-- Configuration -->
+			<!--Change Configuration -->
 			<section id="configuration" class="visible">
 				<div class="container">
 					<div class="row">
 						<div class="col-md-6 col-md-offset-3">
 							<div class="login-box-plain">
 
-								<h2 class="bigintro">Configuration</h2>
+								<h2 class="bigintro">Change Configuration</h2>
 								<div class="divide-40"></div>
-								<form action="{% url 'configuration' %}" method="POST" role="form">
+								<form action="{% url 'ChangeConfiguration' %}" method="POST" role="form">
 								{% csrf_token %}
 								 <div class="form-group">
-										<label for="exampleInputName">Probe Name</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-										<select name = "Probe_ID" class="form-control">
-										<option value="%" selected="selected" disabled="True">Select Probe</option>
-										{% if reg_probe %}
-											{% for r in reg_probe %}
-												<option value = "{{ r.Probe_ID }}" > {{ r.Probe_Name }}</option>								
-										{% endfor %}
+										<label for="exampleInputName"></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+										<select name = "Service_ID" class="form-control">
+										<option value="%" selected="selected" disabled="True">Select Service</option>
+										{% if services %}
+											{% for r in services %}
+												<option value = "{{ r.Service_ID }}" > {{ r.SVC_Name }} {{ r.SVC_Param }} for {{ r.Target_IP }} </option>								
+											{% endfor %}
 										{% else %}
 											Error:
 										{% endif %}	
 									</select><br>
-								</div>
-								<div class="form-group">
-										<label for="exampleInputName">Service Name</label>&nbsp;&nbsp;&nbsp;
-											<select name = "Service" class="form-control">
-												<option value="%" selected="selected" disabled="True">Select Service</option>
-												<option value="HTTP_Downlink">HTTP Downlink</option>
-												<option value="HTTP_Response Time">HTTP Response Time</option>
-												<option value="DNS_Response Time">DNS Response Time</option>
-												<option value="TCP_Response Time">TCP Response Time</option>
-												<option value="ICMP_All">ICMP</option>
-											</select><br>
 								</div>
 								 <div class="form-group">
 										<label for="exampleInputName">Critical Threshold</label>
@@ -228,7 +217,7 @@
 										<input type="text" name="Maximum_Attempt" class="form-control" id="exampleInputName" >
 								  </div>
 								 <div class="form-actions">
-									<button type="submit" class="btn btn-success">Add</button>
+									<button type="submit" class="btn btn-success">Change</button>
 								  </div>
 								</form>
 							</div>

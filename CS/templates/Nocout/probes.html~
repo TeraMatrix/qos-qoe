@@ -35,7 +35,14 @@
             },
            
             xAxis: {
-                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                },
+                title: {
+                    text: 'Date'
+                }
             },
             yAxis: {
                 title: {
@@ -551,7 +558,7 @@ $(function () {
 								<div class="quick-pie panel panel-default">
 											<div class="panel-body">
 								<div class="col-md-6">
-									<form action ="{% url 'Probe_details' %}" method ="POST">{% csrf_token %}
+									<form action ="{% url 'Probe_details' %}" method ="GET">{% csrf_token %}
 									<strong>Probe Names:</strong>&nbsp;&nbsp;&nbsp;
 									
 									<select name = "Probe_ID">
