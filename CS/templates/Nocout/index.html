@@ -45,93 +45,7 @@
 				<!-- BEGIN TOP NAVIGATION MENU -->					
 				<ul class="nav navbar-nav pull-right">
 					<!-- BEGIN NOTIFICATION DROPDOWN -->	
-					<li class="dropdown" id="header-notification">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-bell"></i>
-							<span class="badge">7</span>
-							
-						</a>
-						<ul class="dropdown-menu notification">
-							<li class="dropdown-title">
-								<span><i class="fa fa-bell"></i> 7 Notifications</span>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-success"><i class="fa fa-user"></i></span>
-									<span class="body">
-										<span class="message">5 users online. </span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>Just now</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-primary"><i class="fa fa-comment"></i></span>
-									<span class="body">
-										<span class="message">Martin commented.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>19 mins</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-warning"><i class="fa fa-lock"></i></span>
-									<span class="body">
-										<span class="message">DW1 server locked.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>32 mins</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-info"><i class="fa fa-twitter"></i></span>
-									<span class="body">
-										<span class="message">Twitter connected.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>55 mins</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-danger"><i class="fa fa-heart"></i></span>
-									<span class="body">
-										<span class="message">Jane liked. </span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>2 hrs</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-warning"><i class="fa fa-exclamation-triangle"></i></span>
-									<span class="body">
-										<span class="message">Database overload.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>6 hrs</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li class="footer">
-								<a href="#">See all notifications <i class="fa fa-arrow-circle-right"></i></a>
-							</li>
-						</ul>
-					</li>
+					<!--  -->
 					<!-- END NOTIFICATION DROPDOWN -->
 					
 					<!-- BEGIN USER LOGIN DROPDOWN -->
@@ -171,7 +85,7 @@
 								<span class="selected"></span>
 								</a>					
 							</li>
-							<li class="has-sub">
+							<!-- <li class="has-sub">
 								<a href="javascript:;" class="">
 								<i class="fa fa-bookmark-o fa-fw"></i> <span class="menu-text">QoS</span>
 								<span class="arrow"></span>
@@ -197,21 +111,22 @@
 									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Google</span></a></li>
 									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Whatsapp</span></a></li>
 								</ul>
-							</li>
+							</li> -->
 							<li><a href="probes"><i class="fa fa-desktop fa-fw"></i> <span class="menu-text">Probe</span></a></li>
-							<li><a class="" href="inbox.html"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Events</span></a></li>
+							
 							
 							
 							<li>
-								<a href="" class="">
-								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Reports</span>
+								<a href="Inventory" class="">
+								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">INventory</span>
 								</a></li>
-								
+							 	<li><a class="" href="registration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Probe Registration</span></a></li>
 							
-							<li>
+							<!-- <li>
 								<a href="" class="">
 								<i class="fa fa-map-marker fa-fw"></i> <span class="menu-text">GeoView</span>
-								</a></li>
+								</a>
+							</li> -->
 								
 							
 						</ul>
@@ -242,19 +157,7 @@
 									<div class="clearfix">
 										<h3 class="content-title pull-left">Dashboard</h3>
 										<!-- DATE RANGE PICKER -->
-										<span class="date-range pull-right">
-											<div class="btn-group">
-												<a class="js_update btn btn-default" href="#">Today</a>
-												<a class="js_update btn btn-default" href="#">Last 7 Days</a>
-												<a class="js_update btn btn-default hidden-xs" href="#">Last month</a>
-												
-												<a id="reportrange" class="btn reportrange">
-													<i class="fa fa-calendar"></i>
-													<span></span>
-													<i class="fa fa-angle-down"></i>
-												</a>
-											</div>
-										</span>
+										
 										<!-- /DATE RANGE PICKER -->
 										</div>
 									<div class="description">Overview, Statistics and more</div>
@@ -274,7 +177,7 @@
 						<!-- TABLE STARTED -->
 					<div class ='row'>
 
-<!-- COLUMN 1 -->
+								<!-- COLUMN 1 -->
 									<div class="col-md-12">
 										<div class="quick-pie panel panel-default">
 											<div class="panel-body">
@@ -531,7 +434,7 @@
 											  </tr>
 											</thead>
 											<tbody>
-											  												<td>Site ID</td>
+												<td>Site ID</td>
 												<td>Alarm Number</td>
 												<td>Site Name</td>
 												<td>Start Date</td>
@@ -539,7 +442,8 @@
 												<td>Alert Description</td>
 												<td>Severity</td>
 											  </tr>
-											  <tr> 												<td>Site ID</td>
+											  <tr> 												
+											  <td>Site ID</td>
 												<td>Alarm Number</td>
 												<td>Site Name</td>
 												<td>Start Date</td>
@@ -547,7 +451,8 @@
 												<td>Alert Description</td>
 												<td>Severity</td>
 											  </tr>
-											  <tr> 											<td>Site ID</td>
+											  <tr> 											
+											  <td>Site ID</td>
 												<td>Alarm Number</td>
 												<td>Site Name</td>
 												<td>Start Date</td>

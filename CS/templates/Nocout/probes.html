@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 
 {% load static %}
 
@@ -23,23 +23,31 @@
 	<!-- FONTS -->
 	<link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700' rel='stylesheet' type='text/css'>
 	<!-- CHARTS -->
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
-	
+	<!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> -->
+	<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <!-- HTTP CHART -->
 <script type="text/javascript">
+
 	$(function () {
         $('#container_bar').highcharts({
-            title: {
-                text: 'HTTP Throughput',
-              
-            },
            
+            title: {
+                text: 'HTTP Throughput'
+            },
+            
             xAxis: {
-                categories: [50.00,45.00,40.00,35.00,30.00,25.00,20.00,15.00,10.00,5.00,0.00]
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                   month: '%b'
+          
+                },
+                title: {
+                    text: 'TimeStamp'
+                }
             },
             yAxis: {
                 title: {
-                    text: 'Downlink(Mbps)'
+                    text: 'Downlink (Mbps)'
                 },
                 plotLines: [{
                     value: 0,
@@ -47,8 +55,8 @@
                     color: '#808080'
                 }]
             },
-            tooltip: {
-                valueSuffix: 'Mbps'
+          tooltip: {
+               valueSuffix: 'Mbps'
             },
             legend: {
                 layout: 'vertical',
@@ -57,12 +65,17 @@
                 borderWidth: 0
             },
             series: [{
-                name: 'Downlink',
-		type: 'spline',
-                data: {{ HTTP_Downlink }}
+                name: 'Downlink ',
+                type: 'spline',
+                // Define the data points. All series have a dummy year
+                // of 1970/71 in order to be compared on the same x axis. Note
+                // that in JavaScript, months start at 0 for January, 1 for February etc.
+                data: {{HTTP_Downlink	}}
             }]
         });
     });
+    
+
     
     
 </script>
@@ -176,7 +189,7 @@ $(function () {
             },
             series: [{
                 name: 'Response Time',
-		type: 'spline',
+				type: 'spline',
                 data: {{ TCP_Response_Time }}
             }]
         });
@@ -302,8 +315,61 @@ $(function () {
     });
     
 </script>
-<script src="http://code.highcharts.com/highcharts.js"></script>
-<script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+<!-- HTTP Browsing Chart -->
+<script type="text/javascript">
+
+	$(function () {
+        $('#container_Browsing').highcharts({
+           
+            title: {
+                text: 'HTTP Browsing'
+            },
+            
+            xAxis: {
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                   month: '%b'
+          
+                },
+                title: {
+                    text: 'TimeStamp'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Response Time(ms)'
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+                }]
+            },
+          tooltip: {
+               valueSuffix: 'Mbps'
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle',
+                borderWidth: 0
+            },
+            series: [{
+                name: 'Response Time',
+                type: 'spline',
+                // Define the data points. All series have a dummy year
+                // of 1970/71 in order to be compared on the same x axis. Note
+                // that in JavaScript, months start at 0 for January, 1 for February etc.
+                data: {{HTTP_Browsing	}}
+            }]
+        });
+    });
+</script>
+<!-- <script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script> -->
+<script type="text/javascript" src="{% static 'js/highcharts.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/exporting.js' %}"></script>
 </head>
 <body>
 	<!-- HEADER -->
@@ -327,93 +393,7 @@ $(function () {
 				<!-- BEGIN TOP NAVIGATION MENU -->					
 				<ul class="nav navbar-nav pull-right">
 					<!-- BEGIN NOTIFICATION DROPDOWN -->	
-					<li class="dropdown" id="header-notification">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="fa fa-bell"></i>
-							<span class="badge">7</span>
-							
-						</a>
-						<ul class="dropdown-menu notification">
-							<li class="dropdown-title">
-								<span><i class="fa fa-bell"></i> 7 Notifications</span>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-success"><i class="fa fa-user"></i></span>
-									<span class="body">
-										<span class="message">5 users online. </span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>Just now</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-primary"><i class="fa fa-comment"></i></span>
-									<span class="body">
-										<span class="message">Martin commented.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>19 mins</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-warning"><i class="fa fa-lock"></i></span>
-									<span class="body">
-										<span class="message">DW1 server locked.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>32 mins</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-info"><i class="fa fa-twitter"></i></span>
-									<span class="body">
-										<span class="message">Twitter connected.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>55 mins</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-danger"><i class="fa fa-heart"></i></span>
-									<span class="body">
-										<span class="message">Jane liked. </span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>2 hrs</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li>
-								<a href="#">
-									<span class="label label-warning"><i class="fa fa-exclamation-triangle"></i></span>
-									<span class="body">
-										<span class="message">Database overload.</span>
-										<span class="time">
-											<i class="fa fa-clock-o"></i>
-											<span>6 hrs</span>
-										</span>
-									</span>
-								</a>
-							</li>
-							<li class="footer">
-								<a href="#">See all notifications <i class="fa fa-arrow-circle-right"></i></a>
-							</li>
-						</ul>
-					</li>
+					
 					<!-- END NOTIFICATION DROPDOWN -->
 					
 					<!-- BEGIN USER LOGIN DROPDOWN -->
@@ -453,7 +433,7 @@ $(function () {
 								<span class="selected"></span>
 								</a>					
 							</li>
-							<li class="has-sub">
+							<!-- <li class="has-sub">
 								<a href="javascript:;" class="">
 								<i class="fa fa-bookmark-o fa-fw"></i> <span class="menu-text">QoS</span>
 								<span class="arrow"></span>
@@ -479,22 +459,22 @@ $(function () {
 									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Google</span></a></li>
 									<li><a class="" href="jqgrid_plugin.html"><span class="sub-menu-text">Whatsapp</span></a></li>
 								</ul>
-							</li>
+							</li> -->
 							<li><a href=""><i class="fa fa-desktop fa-fw"></i> <span class="menu-text">Probe</span></a></li>
-							<li><a class="" href="inbox.html"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Events</span></a></li>
+							<!-- <li><a class="" href="inbox.html"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Inventory</span></a></li> -->
 							
 							
 							<li>
-								<a href="" class="">
-								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Reports</span>
+								<a href="/Nocout/Inventory" class="">
+								<i class="fa fa-bar-chart-o fa-fw"></i> <span class="menu-text">Inventory</span>
 								</a></li>
 								
-							
-							<li>
+							<li><a class="" href="registration"><i class="fa fa-envelope-o fa-fw"></i> <span class="menu-text">Probe Registration</span></a></li>
+							<!-- <li>
 								<a href="" class="">
 								<i class="fa fa-map-marker fa-fw"></i> <span class="menu-text">GeoView</span>
-								</a></li>
-								
+								</a></li> 
+								 -->
 							
 						</ul>
 						<!-- /SIDEBAR MENU -->
@@ -524,19 +504,7 @@ $(function () {
 									<div class="clearfix">
 										<h3 class="content-title pull-left">Probes</h3>
 										<!-- DATE RANGE PICKER -->
-										<span class="date-range pull-right">
-											<div class="btn-group">
-												<a class="js_update btn btn-default" href="#">Today</a>
-												<a class="js_update btn btn-default" href="#">Last 7 Days</a>
-												<a class="js_update btn btn-default hidden-xs" href="#">Last month</a>
-												
-												<a id="reportrange" class="btn reportrange">
-													<i class="fa fa-calendar"></i>
-													<span></span>
-													<i class="fa fa-angle-down"></i>
-												</a>
-											</div>
-										</span>
+										
 										<!-- /DATE RANGE PICKER -->
 										</div>
 									<div class="description">Probes Details and Stastics</div>
@@ -545,43 +513,60 @@ $(function () {
 						</div>
 						<!-- /PAGE HEADER -->
 		
+					<form action ="{% url 'Probe_details' %}" method ="GET">{% csrf_token %}
 						<!-- SELECT PROBE -->
 						<div class = 'row'>
 							<div class ="col-md-12">
 								<div class="quick-pie panel panel-default">
 											<div class="panel-body">
 								<div class="col-md-6">
-									<form action ="{% url 'Probe_details' %}" method ="GET">{% csrf_token %}
+									
 									<strong>Probe Names:</strong>&nbsp;&nbsp;&nbsp;
 									
-									<select name = "Probe_ID">
-									<option value="%" selected="selected" disabled="True">Select the option:</option>
-									{% if reg_probe %}
-										{% for r in reg_probe %}
-											<option value = "{{ r.Probe_ID }}" > {{ r.Probe_Name }}</option>									
+									<select name = "Probe_ID" onchange="this.form.submit()">
+									{% if detail %}
+										{% for details in detail %}
+											{% if reg_probe %}
+												{% for name in reg_probe %}
+													{% ifequal name.Probe_ID details.Probe_ID_id %}
+														<option value="{{ name.Probe_ID }}" selected="selected" disabled="True">
+															{{ name.Probe_Name}}
+														</option>
+													{% endifequal %}
+												{% endfor %}
+											{% endif %}
 										{% endfor %}
-										
 									{% else %}
-										Error:
-									{% endif %}	
-									<h1>{{ Probe_ID }} </h1>
+										<option value="%" selected="selected" disabled="True">
+											{{ "Select Probe" }}
+										</option>
+									{% endif %}
+
+										{% if reg_probe %}
+											{% for r in reg_probe %}
+												<option value = "{{ r.Probe_ID }}" > {{ r.Probe_Name }}</option>								
+											{% endfor %}?
+										{% endif %}	
+										
 									</select>
 								</div>
 								<div class="col-md-3">								
-									<input type="submit" value="Report">
-									</form>
+									
+								
 								</div>
 								</div></div>
 							</div>
 						</div>
 						<!-- END OF SELECT PROBE -->
-						
+						</form>
+
 						<!-- PROBE DETAILS -->
+						{% if detail %}
 						<div class = 'row'>
 							<div class ="col-md-12">
 								<div class="quick-pie panel panel-default">
 											<div class="panel-body">
-									{% if detail %}
+									
 										{% for details in detail %}
 										
 										<div class="col-md-4">
@@ -603,16 +588,166 @@ $(function () {
 										<strong>IP Address: </strong> &nbsp;&nbsp;&nbsp;{{ details.Probe_IP_Address }}		
 										</div>
 										{% endfor %}
-									{% endif %}
 									
-								
 								</div></div>
 							</div>
 						</div>
+						{% endif %}
 						<!-- END OF PROBE DETAILS -->
-						
-						<!-- END OF SELECT PROBE -->
-						
+					<form action ="{% url 'Probe_services_details' %}" method ="GET">{% csrf_token %}
+						<!-- SERVICES CORRESPONDING TO CURRENT PROBE-->
+						{% if detail %}
+						<div class = 'row'>
+							<div class ="col-md-12">
+								<div class="quick-pie panel panel-default">
+									<div class="panel-body">
+										
+											<div class="col-md-4">
+												<strong>HTTP Throughput: </strong> &nbsp;&nbsp;&nbsp;
+												<select name="HTTP_Throughput" style ="width: 170px;" onchange="this.form.submit()" >
+												{% if service_HTTP_throughput %}
+													
+														{% if Service_HTTP_Throughput %}
+															{% for service_value in Service_HTTP_Throughput %}
+																{% ifequal service_value.Service_ID service_HTTP_throughput %}
+																	<option value="{{ service_value.Service_ID }}" selected="selected"> {{service_value.Target_IP}}</option>
+																{% endifequal %}
+															{% endfor %}
+														{% endif %}
+													
+													{% else %}
+													<option value="%" selected="selected" disabled="True">
+														{{ "Select Service" }}
+													</option>
+									
+												{% endif %}
+
+													{% if Service_HTTP_Throughput %}
+														{% for value in Service_HTTP_Throughput %}
+															<option value = "{{ value.Service_ID }}" > {{ value.Target_IP }}</option>		
+														{% endfor %}
+													{% endif %}
+												</select>		
+											</div>
+											
+											<div class="col-md-4">
+												<strong>ICMP: </strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+												<select name="ICMP" style ="width: 170px;" onchange="this.form.submit()">
+													{% if service_ICMP  %}
+													
+														{% if Service_ICMP %}
+															{% for servicevalue in Service_ICMP %}
+																{% ifequal servicevalue.Service_ID service_ICMP %}
+																	<option value="{{ servicevalue.Service_ID }}" selected="selected" >{{ servicevalue.Target_IP }}</option>
+																{% endifequal %}
+															{% endfor %}
+														{% endif %}
+													
+													{% else %}
+														<option value="%" selected="selected" disabled="True">
+															{{ "Select Service" }}
+														</option>
+									
+													{% endif %}
+
+													{% if Service_ICMP %}
+														{% for value in Service_ICMP %}
+															<option value = "{{ value.Service_ID }}" > {{ value.Target_IP }}</option>		
+														{% endfor %}
+													{% endif %}
+
+												</select>			
+											</div>
+											
+											<div class="col-md-4">
+												<strong>TCP Response Time: </strong> &nbsp;&nbsp;&nbsp;
+												<select name="TCP" style ="width: 170px;" onchange="this.form.submit()">
+													{% if service_TCP_Response_Time  %}
+													
+														{% if Service_TCP %}
+															{% for value in Service_TCP %}
+																{% ifequal value.Service_ID service_TCP_Response_Time %}
+																	<option value="{{ value.Service_ID }}" selected="selected" >{{ value.Target_IP }}</option>
+																{% endifequal %}
+															{% endfor %}
+														{% endif %}
+													
+													{% else %}
+														<option value="%" selected="selected" disabled="True">
+															{{ "Select Service" }}
+														</option>
+													{% endif %}
+
+														{% if Service_TCP %}
+															{% for value in Service_TCP %}
+																<option value = "{{ value.Service_ID }}" > {{ value.Target_IP }}</option>		
+															{% endfor %}
+													{% endif %}
+												</select>		
+											</div>
+											
+											<div class="col-md-4">
+												<strong>DNS Resolution: </strong> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+												<select name="DNS" style ="width: 170px;" onchange="this.form.submit()">
+													{% if service_DNS_Response_Time  %}
+													
+														{% if Service_DNS %}
+															{% for servicevalue in Service_DNS %}
+																{% ifequal servicevalue.Service_ID service_DNS_Response_Time %}
+																	<option value="{{ servicevalue.Service_ID }}" selected="selected" >{{ servicevalue.Target_IP }}</option>
+																{% endifequal %}
+															{% endfor %}
+														{% endif %}
+													
+													{% else %}
+													<option value="%" selected="selected" disabled="True">
+														{{ "Select Service" }}
+													</option>
+									
+												{% endif %}
+													{% if Service_DNS %}
+														{% for value in Service_DNS %}
+															<option value = "{{ value.Service_ID }}" > {{ value.Target_IP }}</option>		
+														{% endfor %}
+													{% endif %}
+												</select>	
+											</div>
+											
+											<div class="col-md-4">
+												<strong>HTTP Browsing </strong> &nbsp;&nbsp;&nbsp;&nbsp;
+												<select name="HTTP_Browsing" style ="width: 170px;" onchange="this.form.submit()">
+													{% if service_HTTP_Browsing  %}
+													
+														{% if Service_HTTP_Browsing %}
+															{% for servicevalue in Service_HTTP_Browsing %}
+																{% ifequal servicevalue.Service_ID service_HTTP_Browsing %}
+																	<option value="{{ servicevalue.Service_ID }}" selected="selected" >{{ servicevalue.Target_IP }}</option>
+
+																{% endifequal %}
+															{% endfor %}
+														{% endif %}
+													
+													{% else %}
+													<option value="%" selected="selected" disabled="True">
+														{{ "Select Service" }}
+													</option>
+									
+												{% endif %}
+													{% if Service_HTTP_Browsing %}
+														{% for value in Service_HTTP_Browsing %}
+															<option value = "{{ value.Service_ID }}"> {{ value.Target_IP }}</option>		
+														{% endfor %}
+													{% endif %}
+												</select>		
+											</div>
+										</div>
+								</div>
+							</div>
+						</div>
+						{% endif %}
+					</form>
+						<!-- END SERVICES CORRESPONDING TO CURRENT PROBE-->
+					{% ifequal services_cor_probe probe_id %}
 					 <!-- HERO GRAPH -->
 						<div class="row">
 							<div class="col-md-12">
@@ -624,6 +759,7 @@ $(function () {
 									<div class="box-body">
 										<div class="tabbable header-tabs">
 											<ul class="nav nav-tabs">
+												<li><a href="#box_tab6" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">HTTP Browsing</span></a></li>
 												<li><a href="#box_tab5" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">Health</span></a></li>
 												<li><a href="#box_tab4" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">DNS Resolution</span></a></li>
 												 <li><a href="#box_tab3" data-toggle="tab"><i class="fa fa-bar-chart-o"></i> <span class="hidden-inline-mobile">TCP</span></a></li>
@@ -664,22 +800,34 @@ $(function () {
 													<hr class="margin-bottom-0">
 												   <!-- /TAB 3-->
 												 </div>
+
 												<div class="tab-pane fade" id="box_tab4">
 													<!-- TAB 4 -->
 													<div id="chart-dash" class="chart">
-<div id="container_DNS" style="width: 1000px; height: 280px; margin: 0"></div>														
+											<div id="container_DNS" style="width: 1000px; height: 280px; margin: 0"></div>			
 													</div>
 													<hr class="margin-bottom-0">
 												   <!-- /TAB 4-->
-												 </div>
+												</div>
+
 												<div class="tab-pane fade" id="box_tab5">
 													<!-- TAB 5 -->
 													<div id="chart-dash" class="chart">
-<div id="container_HEALTH" style="width: 1000px; height: 280px; margin: 0"></div>														
+														<div id="container_HEALTH" style="width: 1000px; height: 280px; margin: 0"></div>		
 													</div>
 													<hr class="margin-bottom-0">
 												   <!-- /TAB 5-->
-												 </div>
+												</div>
+
+												<div class="tab-pane fade" id="box_tab6">
+													<!-- TAB 6 -->
+													<div id="chart-dash" class="chart">
+														<div id="container_Browsing" style="width: 1000px; height: 280px; margin: 0"></div>
+													</div>
+													<hr class="margin-bottom-0">
+												   <!-- /TAB 6-->
+												</div>
+
 											 </div>
 										</div>
 									</div>
@@ -688,7 +836,7 @@ $(function () {
 							</div>
 						</div>
 						<!-- /HERO GRAPH -->
-					
+					{%  endifequal %}
 
 					</div><!-- /CONTENT-->
 				</div>

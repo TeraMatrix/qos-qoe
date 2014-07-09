@@ -5,7 +5,7 @@ from django.db import models
 ## all the tables related to the Probe
 
 class Probe_ID_Name(models.Model):
-	Probe_ID = models.IntegerField(primary_key=True)
+	Probe_ID = models.AutoField(primary_key=True)
 	Probe_Name = models.CharField(max_length=128)
 	
 	def __unicode__(self):
@@ -63,7 +63,7 @@ class Service_Criteria(models.Model):
 
 class Probe_Service_Conf(models.Model):
 	Probe_ID = models.ForeignKey(Probe_ID_Name)
-	Service_ID = models.IntegerField(primary_key=True)
+	Service_ID = models.AutoField(primary_key=True)
 	Version = models.CharField(max_length=128)
 	SVC_Name = models.CharField(max_length=128)
 	SVC_Param =models.CharField(max_length=128)
